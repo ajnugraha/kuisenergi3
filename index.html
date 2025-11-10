@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Energi Hebat! 🎉 (Mode Game)</title>
+    <!-- Memuat Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif; /* Font yang ceria dan mudah dibaca */
+            background-color: #E0F2F7; /* Biru muda cerah sebagai latar belakang utama */
+            color: #333;
+        }
+
+        /* Palet Warna Kustom */
+        .color-primary-blue { background-color: #2196F3; } /* Biru primer */
+        .color-primary-orange { background-color: #FFB74D; } /* Oranye muda primer */
+        .color-primary-red { background-color: #EF5350; } /* Merah primer */
+        .color-secondary-lightgray { background-color: #f5f5f5; } /* Abu-abu sekunder */
+        
+        .text-primary-blue { color: #2196F3; }
+        .text-primary-orange { color: #FFB74D; }
+        .text-primary-red { color: #EF5350; }
+
+        /* CSS untuk efek flip */
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1); /* Animasi lebih halus */
+            transform-style: preserve-3d;
+        }
+        .card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column; /* Ubah agar bisa menampung teks dan tombol */
+            align-items: center;
+            justify-content: center;
+            padding: 2rem; /* p-8 */
+            text-align: center;
+            border-radius: 1rem; /* rounded-2xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            border: 3px solid transparent; /* Border default */
+        }
+        .card-front {
+            background-color: #f5f5f5; /* Warna sekunder terang */
+            color: #333; /* Teks gelap */
+            border-color: #2196F3; /* Biru sebagai border depan */
+        }
+        .card-back {
+            background-color: #FFB74D; /* Oranye muda untuk jawaban */
+            color: white;
+            transform: rotateY(180deg);
+            border-color: #EF5350; /* Merah sebagai border belakang */
+        }
+
+        .button-primary {
+            background-color: #2196F3; /* Biru */
+            color: white;
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            border-radius: 9999px; /* rounded-full */
+            font-weight: 600; /* font-semibold */
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        }
+        .button-primary:hover {
+            background-color: #1976D2; /* Biru lebih gelap */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px -2px rgba(0, 0, 0, 0.15), 0 3px 6px -3px rgba(0, 0, 0, 0.08);
+        }
+        .button-primary:disabled {
+            background-color: #B0BEC5; /* Abu-abu kalem */
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .button-secondary {
+            background-color: #f5f5f5; /* Abu-abu terang */
+            color: #2196F3; /* Teks biru */
+            border: 2px solid #2196F3; /* Border biru */
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            border-radius: 9999px; /* rounded-full */
+            font-weight: 600; /* font-semibold */
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+        }
+        .button-secondary:hover {
+            background-color: #E3F2FD; /* Biru sangat muda */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.15), 0 2px 4px -2px rgba(0, 0, 0, 0.08);
+        }
+        .button-secondary:disabled {
+            background-color: #CFD8DC; /* Abu-abu kalem */
+            border-color: #90A4AE;
+            color: #90A4AE;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Tombol Gemini */
+        .button-gemini {
+            background: linear-gradient(135deg, #FFB74D 0%, #EF5350 100%); /* Gradien Oranye-Merah */
+            color: white;
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            border-radius: 9999px; /* rounded-full */
+            font-weight: 600; /* font-semibold */
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+            border: none;
+        }
+        .button-gemini:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px -2px rgba(0, 0, 0, 0.15), 0 3px 6px -3px rgba(0, 0, 0, 0.08);
+        }
+        .button-gemini:disabled {
+            background: #B0BEC5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Tombol Jawaban (BARU) */
+        .button-correct {
+            background-color: #4CAF50; /* Hijau */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        }
+        .button-correct:hover {
+            background-color: #388E3C;
+            transform: translateY(-2px);
+        }
+        .button-wrong {
+            background-color: #EF5350; /* Merah Primer */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        }
+        .button-wrong:hover {
+            background-color: #D32F2F;
+            transform: translateY(-2px);
+        }
+
+
+        /* Animasi untuk motivasi */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-bounce-subtle {
+            animation: bounce 1s infinite alternate;
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Modal Style */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 1rem;
+        }
+        .modal-box {
+            background-color: white;
+            border-radius: 1.5rem; /* rounded-3xl */
+            padding: 1.5rem 2rem; /* p-6 md:p-8 */
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-top: 6px solid #FFB74D;
+        }
+        
+        /* Loading Spinner */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #2196F3;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        /* Timer Bar (BARU) */
+        .timer-bar-container {
+            width: 100%;
+            height: 16px;
+            background-color: #B0BEC5; /* Abu-abu */
+            border-radius: 9999px;
+            overflow: hidden;
+            border: 2px solid white;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .timer-bar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #FFEB3B, #EF5350); /* Hijau ke Merah */
+            background-size: 300% 100%;
+            transition: width 1s linear, background-position 1s linear; /* Transisi untuk waktu dan warna */
+            border-radius: 9999px;
+            background-position: 0% 0;
+        }
+
+        /* --- CSS Animasi Akhir Game (BARU) --- */
+
+        /* 1. Animasi Kembang Api (Fireworks) */
+        .firework {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            opacity: 0;
+            /* Animasi untuk meledak (membesar & pudar) */
+            animation: explode 0.8s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(var(--scale-end, 10)); /* Membesar (diatur via JS) */
+                opacity: 0;
+            }
+        }
+
+        /* 2. Animasi Tepuk Tangan (Clapping) */
+        .clap-emoji {
+            position: absolute;
+            font-size: 2.5rem; /* Ukuran emoji */
+            opacity: 0;
+            animation: clap-rise 2.5s ease-out forwards;
+            bottom: -20%; /* Mulai dari bawah */
+        }
+
+        @keyframes clap-rise {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(-100px) scale(1.2); /* Naik dan membesar */
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-250px) scale(0.8); /* Terus naik, mengecil, dan pudar */
+                opacity: 0;
+            }
+        }
+        /* --- Akhir CSS Animasi --- */
+
+    </style>
+    <!-- Memuat font Fredoka dan Poppins dari Google Fonts --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-lg bg-white rounded-3xl shadow-2xl p-6 md:p-8 border-b-8 border-primary-red relative overflow-hidden">
+        <!-- Tombol Fullscreen -->
+        <button id="fullscreenBtn" class="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 focus:outline-none z-20" title="Layar Penuh">
+            <!-- Ikon Expand (Default) -->
+            <svg id="expandIcon" class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75v4.5m0-4.5h-4.5m4.5 0L15 9m5.25 11.25v-4.5m0 4.5h-4.5m4.5 0L15 15" />
+            </svg>
+            <!-- Ikon Contract (Hidden) -->
+            <svg id="contractIcon" class="w-6 h-6 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 9L3.75 3.75M9 9h6m0 0L20.25 3.75M9 9v6m0 0L3.75 20.25M9 15h6m0 0L20.25 20.25M9 15v-6m6 6v-6" />
+            </svg>
+        </button>
+        
+        <!-- Dekorasi Sudut (opsional) --><div class="absolute top-0 left-0 w-24 h-24 bg-primary-orange opacity-10 rounded-br-full z-0"></div>
+        <div class="absolute bottom-0 right-0 w-24 h-24 bg-primary-blue opacity-10 rounded-tl-full z-0"></div>
+
+        <h1 class="text-4xl font-extrabold text-center text-primary-blue mb-6 font-fredoka relative z-10">
+            Kuis Energi Hebat! 🎉
+        </h1>
+        
+        <!-- Panel Skor & Waktu (BARU) -->
+        <div class="flex justify-between items-center mb-4 relative z-10 p-3 bg-gray-100 rounded-xl shadow-inner">
+            <div class="text-xl font-bold text-primary-blue font-fredoka">
+                Skor: <span id="scoreText" class="ml-1">0</span>
+            </div>
+            <div class="text-xl font-bold text-primary-red font-fredoka">
+                Waktu: <span id="timerText" class="ml-1">20</span>s
+            </div>
+        </div>
+        
+        <!-- Timer Bar (BARU) -->
+        <div class="timer-bar-container mb-6 relative z-10">
+            <div id="timerBar" class="timer-bar"></div>
+        </div>
+
+        <!-- Pesan Error Fullscreen -->
+        <p id="fullscreenError" class="hidden text-center text-red-600 bg-red-100 p-2 rounded-lg mb-4 relative z-10">
+            Mode layar penuh tidak diizinkan di jendela ini.
+        </p>
+
+        <!-- Kontainer Kartu --><div id="flashcard" class="h-80 [perspective:1000px] card mb-8 relative z-10">
+            <div id="cardInner" class="card-inner">
+                <!-- Depan Kartu (Pertanyaan) --><div class="card-face card-front">
+                    <p id="questionText" class="text-2xl font-bold font-fredoka text-primary-blue leading-relaxed"></p>
+                </div>
+                <!-- Belakang Kartu (Jawaban) -->
+                <div class="card-face card-back relative overflow-hidden"> <!-- Tambah relative & overflow-hidden -->
+                    
+                    <!-- Kontainer Animasi (BARU) -->
+                    <div id="animationContainer" class="absolute inset-0 w-full h-full z-0">
+                        <!-- Animasi akan di-inject di sini oleh JS -->
+                    </div>
+
+                    <!-- Konten Teks (harus di atas animasi) -->
+                    <div class="relative z-10 flex flex-col items-center justify-center"> <!-- Tambah z-10 -->
+                        <p id="answerText" class="text-xl font-semibold font-fredoka text-white leading-relaxed mb-4"></p>
+                        <div id="answerFeedbackButtons" class="hidden flex flex-col md:flex-row gap-3">
+                            <button id="correctBtn" class="button-correct">✅ Jawabanku Benar</button>
+                            <button id="wrongBtn" class="button-wrong">❌ Jawabanku Salah</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Tombol Kontrol --><div class="flex flex-col md:flex-row justify-between items-center gap-4 relative z-10">
+            <span id="counterText" class="text-lg text-gray-700 font-semibold animate-bounce-subtle">Pertanyaan 1 / 10</span>
+            <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+                <!-- Tombol Gemini -->
+                <button id="geminiExplainBtn" class="button-gemini hidden">
+                    ✨ Jelaskan, dong!
+                </button>
+                <button id="showAnswerBtn" class="button-secondary">
+                    Lihat Jawaban! 🤔
+                </button>
+                <!-- Tombol Soal Berikutnya (untuk timer habis) -->
+                <button id="nextQuestionTimerBtn" class="button-primary hidden">
+                    Soal Berikutnya ➡️
+                </button>
+                <!-- Tombol Restart -->
+                <button id="restartBtn" class="button-primary hidden">
+                    Mulai Lagi! 🚀
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Overlays (BARU) -->
+    <div id="startScreen" class="absolute inset-0 bg-white rounded-3xl flex flex-col items-center justify-center z-30 p-8 text-center">
+        <h2 class="text-4xl font-bold text-primary-blue mb-4 font-fredoka">Siap Bermain?</h2>
+        <p class="text-xl text-gray-600 mb-10">
+            Kamu punya <strong class="text-primary-red">20 detik</strong> per soal.<br>Jawab 10 soal acak untuk jadi Master Energi!
+        </p>
+        <button id="startBtn" class="button-primary text-2xl px-10 py-5 transform transition-transform hover:scale-105">
+            Mulai Kuis! 🚀
+        </button>
+    </div>
+    
+    <div id="countdownOverlay" class="absolute inset-0 bg-white/95 rounded-3xl flex items-center justify-center z-40 hidden">
+        <span id="countdownText" class="text-9xl font-extrabold text-primary-blue" style="font-size: 10rem; transform: scale(1.5);">3</span>
+    </div>
+
+    <!-- Modal untuk Penjelasan Gemini (BARU) -->
+    <div id="geminiModal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-2xl font-bold font-fredoka text-primary-orange">✨ Penjelasan Gemini</h3>
+                <button id="closeModalBtn" class="text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
+            </div>
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="flex justify-center items-center py-8">
+                <div class="spinner"></div>
+                <span class="ml-4 text-gray-600 font-semibold">Sedang bertanya pada Gemini...</span>
+            </div>
+            <!-- Konten Modal -->
+            <div id="modalContent" class="text-gray-700 text-lg leading-relaxed hidden">
+                <!-- Penjelasan dari Gemini akan muncul di sini -->
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Data Kuis (30 Soal)
+        const quizData = [
+            // 10 Mudah (index 0-9)
+            { q: "Apa sumber energi utama bagi kehidupan di bumi?", a: "Matahari" },
+            { q: "Energi apa yang kita rasakan dari sinar matahari?", a: "Energi panas" },
+            { q: "Kipas angin bisa berputar karena energi apa?", a: "Energi listrik" }, // <-- DIPERBAIKI DI SINI
+            { q: "Setrika listrik mengubah energi listrik menjadi energi apa?", a: "Energi panas" },
+            { q: "Sumber energi apa yang tidak akan habis?", a: "Matahari" },
+            { q: "Dari mana tubuh manusia mendapatkan energi untuk bergerak?", a: "Dari makanan" },
+            { q: "Mobil dapat bergerak karena menggunakan energi dari apa?", a: "Dari bensin" },
+            { q: "Energi apa yang digunakan untuk menjemur pakaian agar kering?", a: "Energi panas matahari" },
+            { q: "Lampu senter menyala karena mengubah energi listrik menjadi energi apa?", a: "Energi cahaya" },
+            { q: "Benda yang bergetar akan menghasilkan energi apa?", a: "Energi bunyi" },
+            // 10 Sedang (index 10-19)
+            { q: "Kincir angin bergerak karena adanya energi apa?", a: "Energi angin" },
+            { q: "Air terjun dapat menghasilkan energi listrik melalui apa?", a: "Turbin" },
+            { q: "Energi dari makanan disebut energi apa?", a: "Energi kimia" },
+            { q: "Perubahan energi apa yang terjadi pada kipas angin?", a: "Listrik menjadi gerak" },
+            { q: "Perubahan energi apa yang terjadi pada setrika listrik?", a: "Listrik menjadi panas" },
+            { q: "Energi listrik di rumah berasal dari pembangkit yang disebut apa?", a: "Pembangkit listrik" },
+            { q: "Kompor gas mengubah energi kimia gas menjadi energi apa?", a: "Energi panas" },
+            { q: "Lilin yang menyala menghasilkan dua bentuk energi, yaitu energi cahaya dan energi apa?", a: "Energi panas" },
+            { q: "Alat musik gitar menghasilkan energi apa ketika dipetik?", a: "Energi bunyi" },
+            { q: "Baterai menyimpan energi dalam bentuk energi apa?", a: "Energi kimia" },
+            // 10 Sulit (index 20-29)
+            { q: "Energi apa yang dihasilkan dari pergerakan air di bendungan?", a: "Energi air" },
+            { q: "Energi apa yang membantu tanaman membuat makanan?", a: "Energi cahaya matahari" },
+            { q: "Energi apa yang membuat mobil mainan baterai bisa berjalan?", a: "Energi listrik" },
+            { q: "Energi apa yang berubah menjadi cahaya pada bola lampu?", a: "Energi listrik" },
+            { q: "Energi apa yang berubah menjadi gerak pada kipas angin?", a: "Energi listrik" },
+            { q: "Energi apa yang berubah menjadi panas saat kita menjemur baju?", a: "Energi cahaya matahari" },
+            { q: "Energi apa yang digunakan untuk menyalakan televisi?", a: "Energi listrik" },
+            { q: "Sebutkan satu contoh sumber energi yang dapat diperbarui!", a: "Matahari / angin / air" },
+            { q: "Mengapa kita harus menghemat energi listrik?", a: "Agar energi tidak cepat habis" },
+            { q: "Sebutkan satu cara menghemat energi di rumah!", a: "Mematikan lampu saat siang hari" }
+        ];
+
+        // Elemen DOM
+        const flashcard = document.getElementById('flashcard');
+        const cardInner = document.getElementById('cardInner');
+        const questionText = document.getElementById('questionText');
+        const answerText = document.getElementById('answerText');
+        const counterText = document.getElementById('counterText');
+        const showAnswerBtn = document.getElementById('showAnswerBtn');
+        const restartBtn = document.getElementById('restartBtn');
+
+        // --- BARIS YANG DUPLIKAT DIHAPUS DARI SINI ---
+
+        // Elemen Fullscreen
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const expandIcon = document.getElementById('expandIcon');
+        const contractIcon = document.getElementById('contractIcon');
+        const fullscreenError = document.getElementById('fullscreenError');
+
+        // Elemen Overlay (BARU)
+        const startScreen = document.getElementById('startScreen');
+        const startBtn = document.getElementById('startBtn');
+        const countdownOverlay = document.getElementById('countdownOverlay');
+        const countdownText = document.getElementById('countdownText');
+
+        // Elemen Gemini
+        const geminiExplainBtn = document.getElementById('geminiExplainBtn');
+        const geminiModal = document.getElementById('geminiModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modalContent = document.getElementById('modalContent');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        
+        // Elemen Game (BARU)
+        const scoreText = document.getElementById('scoreText');
+        const timerText = document.getElementById('timerText');
+        const timerBar = document.getElementById('timerBar');
+        const correctBtn = document.getElementById('correctBtn');
+        const wrongBtn = document.getElementById('wrongBtn');
+        const answerFeedbackButtons = document.getElementById('answerFeedbackButtons');
+        const nextQuestionTimerBtn = document.getElementById('nextQuestionTimerBtn'); // <-- Tombol baru
+
+        // Variabel Status Game
+        let currentGameQuestions = []; // 10 soal ter-filter
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let isFlipped = false;
+        let timer; // Untuk interval
+        let timeLeft = 20;
+        const FULL_TIME = 20; // Waktu per soal
+
+        // --- Fungsi Utama Game ---
+
+        // (Fungsi startGame() tetap sama)
+        function startGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            updateScoreUI();
+            
+            // 1. Acak dan Pilih 10 soal
+            // Tambahkan index asli untuk sorting kesulitan
+            const taggedQuizData = quizData.map((item, index) => ({ ...item, originalIndex: index }));
+            
+            // 2. Acak (Fisher-Yates Shuffle)
+            for (let i = taggedQuizData.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [taggedQuizData[i], taggedQuizData[j]] = [taggedQuizData[j], taggedQuizData[i]];
+            }
+            
+            // 3. Ambil 10, lalu urutkan berdasarkan index asli (kesulitan)
+            currentGameQuestions = taggedQuizData.slice(0, 10).sort((a, b) => a.originalIndex - b.originalIndex);
+            
+            // 4. Muat soal pertama
+            loadQuestion();
+        }
+
+        // Fungsi untuk memuat pertanyaan (Tetap sama)
+        function loadQuestion() {
+            if (timer) clearInterval(timer); // Hentikan timer lama
+
+            if (currentQuestionIndex < currentGameQuestions.length) { // 10 soal
+                const q = currentGameQuestions[currentQuestionIndex];
+                questionText.textContent = q.q;
+                answerText.textContent = q.a;
+                counterText.textContent = `Pertanyaan ${currentQuestionIndex + 1} / ${currentGameQuestions.length}`;
+                
+                if (flashcard.classList.contains('is-flipped')) {
+                    flashcard.classList.remove('is-flipped');
+                }
+                isFlipped = false;
+                
+                // Reset tombol
+                showAnswerBtn.classList.remove('hidden');
+                restartBtn.classList.add('hidden');
+                geminiExplainBtn.classList.add('hidden');
+                answerFeedbackButtons.classList.add('hidden'); // Sembunyikan tombol Benar/Salah
+                nextQuestionTimerBtn.classList.add('hidden'); // <-- Sembunyikan tombol "Soal Berikutnya"
+
+                showAnswerBtn.disabled = false;
+                
+                // Mulai Timer baru
+                timeLeft = FULL_TIME;
+                timerText.textContent = timeLeft;
+                timerBar.style.width = '100%';
+                timerBar.style.backgroundPosition = '0% 0'; // Reset warna gradient
+                timer = setInterval(updateTimer, 1000);
+
+            } else {
+                endGame();
+            }
+        }
+        
+        // Fungsi Timer (Tetap sama)
+        function updateTimer() {
+            timeLeft--;
+            timerText.textContent = timeLeft;
+            
+            // Update visual timer bar
+            const percentLeft = (timeLeft / FULL_TIME) * 100;
+            timerBar.style.width = `${percentLeft}%`;
+            
+            // Pindahkan gradient saat waktu menipis
+            if(percentLeft < 50) {
+                timerBar.style.backgroundPosition = '50% 0'; // Tengah (Kuning)
+            }
+            if(percentLeft < 25) {
+                timerBar.style.backgroundPosition = '100% 0'; // Kanan (Merah)
+            }
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+
+                // --- PERMINTAAN PENGGUNA: Penalti -2 poin jika waktu habis ---
+                score -= 2;
+                if (score < 0) score = 0; // Skor tidak boleh minus
+                updateScoreUI();
+                // --------------------------------------------------------
+
+                showAnswer(true); // Waktu habis, otomatis buka jawaban, kirim parameter 'true'
+            }
+        }
+        
+        // Fungsi untuk membuka kartu (Tetap sama)
+        function showAnswer(flippedByTimer = false) { // <-- Terima parameter
+            if (isFlipped) return; // Mencegah klik ganda
+            
+            clearInterval(timer); // Hentikan timer
+            flashcard.classList.add('is-flipped');
+            isFlipped = true;
+            
+            // Tukar tombol
+            showAnswerBtn.classList.add('hidden'); // Selalu sembunyikan "Lihat Jawaban"
+            geminiExplainBtn.classList.remove('hidden'); // Selalu tampilkan "Jelaskan"
+            geminiExplainBtn.disabled = false;
+
+            if (flippedByTimer) {
+                // Jika timer habis, tampilkan "Soal Berikutnya"
+                nextQuestionTimerBtn.classList.remove('hidden');
+                answerFeedbackButtons.classList.add('hidden'); // Pastikan Benar/Salah tersembunyi
+            } else {
+                // Jika user yang klik, tampilkan "Benar/Salah"
+                answerFeedbackButtons.classList.remove('hidden');
+                nextQuestionTimerBtn.classList.add('hidden'); // Pastikan "Soal Berikutnya" tersembunyi
+            }
+        }
+
+        // Fungsi untuk memproses jawaban (Tetap sama)
+        function handleAnswer(isCorrect) {
+            if (isCorrect) {
+                score += 10;
+            } else {
+                score -= 2;
+                if (score < 0) score = 0; // Skor tidak boleh minus
+            }
+            updateScoreUI();
+            
+            // Lanjut ke soal berikutnya
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        // Fungsi untuk update UI skor (Tetap sama)
+        function updateScoreUI() {
+            scoreText.textContent = score;
+        }
+        
+        // Fungsi akhir game (BARU - Didesain ulang total)
+        function endGame() {
+            clearInterval(timer);
+            
+            let badge = "";
+            let badgeText = "";
+            let animationHtml = ""; // String HTML untuk animasi
+            const animContainer = document.getElementById('animationContainer');
+            animContainer.innerHTML = ''; // Kosongkan animasi sebelumnya
+
+            // Hapus teks di card-front (sisi tersembunyi)
+            questionText.textContent = '';
+            
+            if (score >= 90) { // 90-100
+                badge = "🏆 Master Energi";
+                badgeText = "Luar biasa! Kamu menguasai semua tentang energi!";
+                
+                // Buat 15 partikel kembang api acak
+                for (let i = 0; i < 15; i++) {
+                    const top = Math.random() * 80 + 10; // Posisi Y (10% - 90%)
+                    const left = Math.random() * 80 + 10; // Posisi X (10% - 90%)
+                    const delay = Math.random() * 1.5; // Delay 0 - 1.5s
+                    const scale = Math.random() * 15 + 5; // Ukuran ledakan
+                    const hue = Math.random() * 360; // Warna acak
+                    
+                    animationHtml += `<div class="firework" style="
+                        top: ${top}%; 
+                        left: ${left}%; 
+                        --scale-end: ${scale};
+                        animation-delay: ${delay}s;
+                        background: hsl(${hue}, 100%, 70%);
+                        box-shadow: 0 0 5px hsl(${hue}, 100%, 70%), 0 0 10px hsl(${hue}, 100%, 70%);
+                    "></div>`;
+                }
+                
+            } else if (score >= 80) { // 80-89
+                badge = "🥈 Ahli Energi";
+                badgeText = "Kerja bagus! Kamu sudah sangat paham energi!";
+                
+                // Buat 10 emoji tepuk tangan acak
+                for (let i = 0; i < 10; i++) {
+                    const left = Math.random() * 80 + 10; // Posisi X (10% - 90%)
+                    const delay = Math.random() * 2; // Delay 0 - 2s
+                    const rotation = Math.random() * 40 - 20; // Rotasi acak (-20deg - 20deg)
+                    
+                    animationHtml += `<span class="clap-emoji" style="
+                        left: ${left}%; 
+                        animation-delay: ${delay}s;
+                        transform: rotate(${rotation}deg);
+                    ">👏</span>`;
+                }
+
+            } else { // < 80
+                badge = "🥉 Pejuang Energi";
+                badgeText = "Bagus! Terus belajar dan coba lagi ya!";
+                // Tidak ada animasi
+            }
+            
+            // Set Teks di card-back (yang terlihat) dengan TULISAN BESAR
+            answerText.innerHTML = `
+                <div class="text-5xl mb-4">${badge.split(' ')[0]}</div> <!-- Emoji Besar -->
+                <div class="text-3xl font-fredoka font-bold mb-3">${badge.substring(badge.indexOf(' ') + 1)}</div> <!-- Judul Badge -->
+                <div class="text-lg font-normal">${badgeText}</div> <!-- Teks Deskripsi -->
+                <div class="text-2xl font-bold mt-4">Skor Akhir: ${score}</div> <!-- Skor -->
+            `;
+            
+            // Injeksi HTML animasi ke kontainer
+            animContainer.innerHTML = animationHtml;
+
+            counterText.textContent = `Selesai ${currentGameQuestions.length} / ${currentGameQuestions.length}`;
+            
+            // Tampilkan kartu akhir (pastikan ter-flip)
+            if (!flashcard.classList.contains('is-flipped')) {
+                flashcard.classList.add('is-flipped');
+            }
+            
+            // Sembunyikan semua tombol & tunjukkan restart
+            showAnswerBtn.classList.add('hidden');
+            geminiExplainBtn.classList.add('hidden');
+            answerFeedbackButtons.classList.add('hidden');
+            nextQuestionTimerBtn.classList.add('hidden');
+            restartBtn.classList.remove('hidden'); // Tampilkan tombol Mulai Lagi
+
+            // Reset UI Timer
+            timerText.textContent = "-";
+            timerBar.style.width = '100%';
+            timerBar.style.backgroundPosition = '0% 0';
+        }
+
+        // --- Event Listener ---
+        
+        // (Listener yang sudah ada)
+        showAnswerBtn.addEventListener('click', () => showAnswer(false)); // <-- Kirim 'false' saat user klik
+        correctBtn.addEventListener('click', () => handleAnswer(true));
+        wrongBtn.addEventListener('click', () => handleAnswer(false));
+        restartBtn.addEventListener('click', startGame);
+        nextQuestionTimerBtn.addEventListener('click', () => { // <-- Listener untuk tombol baru
+            currentQuestionIndex++;
+            loadQuestion();
+        });
+
+        // --- Listener Baru untuk Countdown ---
+        startBtn.addEventListener('click', () => {
+            startScreen.classList.add('hidden');
+            countdownOverlay.classList.remove('hidden');
+            
+            let count = 3;
+            
+            const runCountdown = () => {
+                // Terapkan efek scaling (zoom) sederhana untuk ilusi "balapan"
+                countdownText.style.transform = 'scale(1)';
+                countdownText.style.opacity = '0.5';
+                
+                if (count > 0) {
+                    countdownText.textContent = count;
+                } else {
+                    countdownText.textContent = 'MULAI!';
+                }
+                
+                // Animasikan
+                setTimeout(() => {
+                    countdownText.style.transform = 'scale(1.5)';
+                    countdownText.style.opacity = '1';
+                }, 50); // Mulai animasi
+
+                count--;
+
+                if (count >= -1) {
+                    setTimeout(runCountdown, 1000);
+                } else {
+                    // Selesai countdown
+                    setTimeout(() => {
+                        countdownOverlay.classList.add('hidden');
+                        startGame(); // Mulai game setelah "MULAI!" tampil
+                    }, 500); // Tahan "MULAI!" sejenak
+                }
+            };
+            
+            runCountdown();
+        });
+
+
+        // --- Logika Gemini API (Sama seperti sebelumnya) ---
+
+        async function callGeminiAPI(prompt) {
+            const apiKey = ""; // Dibiarkan kosong, akan diisi oleh environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                safetySettings: [
+                    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+                    { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+                    { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+                    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+                ]
+            };
+
+            let response;
+            let delay = 1000;
+            for (let i = 0; i < 5; i++) {
+                try {
+                    response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) break;
+                    else if (response.status === 429) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        delay *= 2;
+                    } else throw new Error(`HTTP error! status: ${response.status}`);
+                } catch (error) {
+                    console.error('API call error:', error);
+                    if (i === 4) return `Maaf, terjadi kesalahan saat menghubungi Gemini. (Error: ${error.message})`;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                }
+            }
+
+            if (!response || !response.ok) return "Maaf, terjadi kesalahan saat mengambil data dari Gemini.";
+            const result = await response.json();
+            
+            if (result.candidates && result.candidates[0] && result.candidates[0].content) {
+                return result.candidates[0].content.parts[0].text;
+            } else if (result.candidates && result.candidates[0].finishReason) {
+                return "Maaf, penjelasan untuk pertanyaan ini tidak bisa ditampilkan karena alasan keamanan.";
+            } else {
+                return "Maaf, Gemini tidak memberikan jawaban yang valid saat ini.";
+            }
+        }
+
+        function openModal() { geminiModal.classList.remove('hidden'); }
+        function closeModal() { geminiModal.classList.add('hidden'); }
+
+        geminiExplainBtn.addEventListener('click', async () => {
+            openModal();
+            loadingIndicator.classList.remove('hidden');
+            modalContent.classList.add('hidden');
+            geminiExplainBtn.disabled = true;
+
+            const currentQ = currentGameQuestions[currentQuestionIndex]; // Gunakan data game saat ini
+            const prompt = `Jelaskan dengan bahasa yang sangat sederhana, seperti untuk anak kelas 3 SD, tentang: Pertanyaan "${currentQ.q}" (Jawabannya adalah: "${currentQ.a}"). Mengapa jawabannya bisa begitu? Berikan penjelasan singkat (1-2 kalimat) yang menyenangkan.`;
+
+            const explanation = await callGeminiAPI(prompt);
+
+            modalContent.textContent = explanation;
+            loadingIndicator.classList.add('hidden');
+            modalContent.classList.remove('hidden');
+        });
+
+        closeModalBtn.addEventListener('click', closeModal);
+        geminiModal.addEventListener('click', (e) => {
+            if (e.target === geminiModal) closeModal();
+        });
+
+        // --- Logika Fullscreen (Sama seperti sebelumnya) ---
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen()
+                    .catch(err => {
+                        console.error(`Error saat mencoba mode layar penuh: ${err.message} (${err.name})`);
+                        fullscreenError.classList.remove('hidden');
+                        setTimeout(() => { fullscreenError.classList.add('hidden'); }, 3000);
+                    });
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+
+        function handleFullScreenChange() {
+            if (document.fullscreenElement) {
+                expandIcon.classList.add('hidden');
+                contractIcon.classList.remove('hidden');
+            } else {
+                expandIcon.classList.remove('hidden');
+                contractIcon.classList.add('hidden');
+            }
+        }
+        
+        if (fullscreenBtn && document.documentElement.requestFullscreen) {
+            fullscreenBtn.addEventListener('click', toggleFullScreen);
+            document.addEventListener('fullscreenchange', handleFullScreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullScreenChange);
+            document.addEventListener('mozfullscreenchange', handleFullScreenChange);
+            document.addEventListener('MSFullscreenChange', handleFullScreenChange);
+        } else if (fullscreenBtn) {
+            fullscreenBtn.style.display = 'none';
+        }
+
+
+        // MulARET Game saat halaman dimuat!
+        // startGame(); // <-- Hapus ini, game akan dimulai oleh tombol Start
+    </script>
+</body>
+</html>
